@@ -1,20 +1,20 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import iconClose from '../img/bi_x-octagon.png';
+import iconOk from '../img/bi_check2-circle.svg';
 
 const form = document.querySelector('.form');
+const submitBtn = document.querySelector('[type="submit"]');
 
-form.addEventListener('submit', e => {
-  e.preventDefault();
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
 
-  const delayInput = form.elements.delay;
-  const delay = parseInt(delayInput.value);
-
-  const stateInput = form.elements.state;
-  const state = stateInput.value;
+  const delay = Number(document.querySelector('[name="delay"]').value);
+  const state = document.querySelector('[name="state"]:checked');
 
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (state === 'fulfilled') {
+      if (state.value === 'fulfilled') {
         resolve(delay);
       } else {
         reject(delay);
@@ -22,21 +22,23 @@ form.addEventListener('submit', e => {
     }, delay);
   });
 
-  promise.then(
-    result => {
+  promise
+    .then(delay => {
       iziToast.success({
-        title: 'Success',
-        message: `Fulfilled promise in ${result}ms`,
+        message: `Fulfilled promise in ${delay}ms`,
+        messageColor: '#FFF',
+        backgroundColor: '#59A10D',
+        position: 'topRight',
+        iconUrl: iconOk,
       });
-    },
-    error => {
+    })
+    .catch(delay => {
       iziToast.error({
-        title: 'Error',
-        message: `Rejected promise in ${error}ms`,
+        message: `Rejected promise in ${delay}ms`,
+        messageColor: '#FFF',
+        backgroundColor: '#EF4040',
+        position: 'topRight',
+        iconUrl: iconClose,
       });
-    }
-  );
-
-  // Скидання значень полів форми після відправки
-  form.reset();
+    });
 });
